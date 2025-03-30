@@ -34,9 +34,13 @@
 // Execute `rustlings hint tests7` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I AM DONE
 
 fn main() {}
+
+// 通过设置 build.rs 来配置编译前的环境变量等配置。
+//
+//
 
 #[cfg(test)]
 mod tests {

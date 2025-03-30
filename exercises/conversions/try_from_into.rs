@@ -27,7 +27,7 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
+// I AM DONE
 
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
@@ -41,6 +41,12 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (red, green, blue) = tuple;
+        if red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255{
+            Err(Self::Error::IntConversion)
+        }else{
+            Ok(Color { red: red as u8, green: green as u8, blue: blue as u8})
+        }
     }
 }
 
@@ -48,6 +54,12 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        for i in arr{
+            if i < 0 || i > 255 {
+                return Err(Self::Error::IntConversion)
+            }
+        }
+        return Ok(Color { red: arr[0] as u8, green: arr[1] as u8, blue: arr[2] as u8 })
     }
 }
 
@@ -55,6 +67,11 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 {
+            return  Err(Self::Error::BadLen);
+        }
+        let arr: [i16; 3] = slice.try_into().unwrap();
+        arr.try_into()   // 会自动匹配所返回的类型 Result<Self, Self::Error>
     }
 }
 

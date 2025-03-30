@@ -27,15 +27,22 @@
 //
 // You should NOT modify any existing code except for adding two lines of attributes.
 
-// I AM NOT DONE
+// I AM DONE
+// 为了导出外部可用的函数，那么外部需要直接调用这个函数
+// 但是rust 编译的时候，默认会修改这个函数。
+// 所以为了不让rust修改，添加 #[no_mangle]
+// #[link_name = "my_demo_function"] 为函数指定实际链接的函数。
+
 
 extern "Rust" {
     fn my_demo_function(a: u32) -> u32;
+    #[link_name = "my_demo_function"]
     fn my_demo_function_alias(a: u32) -> u32;
 }
 
 mod Foo {
     // No `extern` equals `extern "Rust"`.
+    #[no_mangle]
     fn my_demo_function(a: u32) -> u32 {
         a
     }
