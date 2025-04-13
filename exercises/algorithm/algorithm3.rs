@@ -3,10 +3,44 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
+// I AM DONE
 
-fn sort<T>(array: &mut [T]){
-	//TODO
+fn sort<T: Ord>(array: &mut [T]) {
+    if array.len() <= 1 {
+        return;
+    }
+    quick_sort(array, 0, array.len() - 1);
+}
+
+fn quick_sort<T: Ord>(array: &mut [T], low: usize, high: usize) {
+    if low < high {
+        let pivot = partition(array, low, high);
+
+        // 如果 pivot > 0，才对左子数组进行排序
+        if pivot > 0 {
+            quick_sort(array, low, pivot - 1);
+        }
+
+        // 对右子数组进行排序
+        quick_sort(array, pivot + 1, high);
+    }
+}
+
+fn partition<T: Ord>(array: &mut [T], low: usize, high: usize) -> usize {
+    let pivot = high;
+    let mut i = low;
+
+    // 将所有小于等于 pivot 的元素移到左侧
+    for j in low..high {
+        if array[j] <= array[pivot] {
+            array.swap(i, j);
+            i += 1;
+        }
+    }
+
+    // 将 pivot 放到正确的位置
+    array.swap(i, pivot);
+    i
 }
 #[cfg(test)]
 mod tests {

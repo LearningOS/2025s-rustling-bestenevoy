@@ -2,7 +2,7 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
+// I AM DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -29,7 +29,51 @@ impl Graph for UndirectedGraph {
         &self.adjacency_table
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        let (node1, node2, weight) = edge;
+
+        // 确保两个节点都存在于图中
+        self.add_node(node1);
+        self.add_node(node2);
+
+        // 添加从 node1 到 node2 的边
+        let node1_neighbours = self.adjacency_table_mutable()
+            .get_mut(node1)
+            .unwrap();
+
+        // 检查边是否已存在，如果存在则更新权重
+        let mut edge_exists = false;
+        for (to_node, edge_weight) in node1_neighbours.iter_mut() {
+            if to_node == node2 {
+                *edge_weight = weight;
+                edge_exists = true;
+                break;
+            }
+        }
+
+        // 如果边不存在则添加
+        if !edge_exists {
+            node1_neighbours.push((node2.to_string(), weight));
+        }
+
+        // 添加从 node2 到 node1 的边（无向图是双向的）
+        let node2_neighbours = self.adjacency_table_mutable()
+            .get_mut(node2)
+            .unwrap();
+
+        // 检查边是否已存在，如果存在则更新权重
+        let mut edge_exists = false;
+        for (to_node, edge_weight) in node2_neighbours.iter_mut() {
+            if to_node == node1 {
+                *edge_weight = weight;
+                edge_exists = true;
+                break;
+            }
+        }
+
+        // 如果边不存在则添加
+        if !edge_exists {
+            node2_neighbours.push((node1.to_string(), weight));
+        }
     }
 }
 pub trait Graph {
@@ -37,11 +81,60 @@ pub trait Graph {
     fn adjacency_table_mutable(&mut self) -> &mut HashMap<String, Vec<(String, i32)>>;
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
-        //TODO
-		true
+        if self.contains(node) {
+            return false; // 节点已存在，返回 false
+        }
+
+        // 添加新节点，初始邻接表为空
+        self.adjacency_table_mutable().insert(node.to_string(), Vec::new());
+        true
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        let (node1, node2, weight) = edge;
+
+        // 确保两个节点都存在于图中
+        self.add_node(node1);
+        self.add_node(node2);
+
+        // 添加从 node1 到 node2 的边
+        let node1_neighbours = self.adjacency_table_mutable()
+            .get_mut(node1)
+            .unwrap();
+
+        // 检查边是否已存在，如果存在则更新权重
+        let mut edge_exists = false;
+        for (to_node, edge_weight) in node1_neighbours.iter_mut() {
+            if to_node == node2 {
+                *edge_weight = weight;
+                edge_exists = true;
+                break;
+            }
+        }
+
+        // 如果边不存在则添加
+        if !edge_exists {
+            node1_neighbours.push((node2.to_string(), weight));
+        }
+
+        // 添加从 node2 到 node1 的边（无向图是双向的）
+        let node2_neighbours = self.adjacency_table_mutable()
+            .get_mut(node2)
+            .unwrap();
+
+        // 检查边是否已存在，如果存在则更新权重
+        let mut edge_exists = false;
+        for (to_node, edge_weight) in node2_neighbours.iter_mut() {
+            if to_node == node1 {
+                *edge_weight = weight;
+                edge_exists = true;
+                break;
+            }
+        }
+
+        // 如果边不存在则添加
+        if !edge_exists {
+            node2_neighbours.push((node1.to_string(), weight));
+        }
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()

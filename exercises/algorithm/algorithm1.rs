@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+// I AM DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -70,14 +70,47 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+    where
+        T: Ord+Clone, // Add this constraint since we need to compare values
+    {
+        let mut result = Self::new();
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+
+        // While we have nodes in both lists
+        while let (Some(node_a), Some(node_b)) = (current_a, current_b) {
+            unsafe {
+                let val_a = &(*node_a.as_ptr()).val;
+                let val_b = &(*node_b.as_ptr()).val;
+
+                if val_a <= val_b {
+                    result.add(val_a.clone()); // Assuming T implements Clone
+                    current_a = (*node_a.as_ptr()).next;
+                } else {
+                    result.add(val_b.clone());
+                    current_b = (*node_b.as_ptr()).next;
+                }
+            }
         }
-	}
+
+        // Add remaining nodes from list_a, if any
+        while let Some(node_a) = current_a {
+            unsafe {
+                result.add((*node_a.as_ptr()).val.clone());
+                current_a = (*node_a.as_ptr()).next;
+            }
+        }
+
+        // Add remaining nodes from list_b, if any
+        while let Some(node_b) = current_b {
+            unsafe {
+                result.add((*node_b.as_ptr()).val.clone());
+                current_b = (*node_b.as_ptr()).next;
+            }
+        }
+
+        result
+    }
 }
 
 impl<T> Display for LinkedList<T>
